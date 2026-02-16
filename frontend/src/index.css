@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+@theme {
+  /* Ambil warna dari background logo FluxPOS */
+  --color-brand-dark: #000d1a;   /* Deep Navy */
+  --color-brand-blue: #0095ff;   /* Biru cerah logo */
+  --color-brand-cyan: #00d2ff;   /* Cyan logo */
+}
