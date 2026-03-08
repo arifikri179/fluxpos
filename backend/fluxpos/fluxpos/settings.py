@@ -29,7 +29,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'business', 
     'auth.apps.AuthConfig', # <--- UBAH INI (Gunakan path ke apps.py)
-    'menuitem'
+    'menuitem',
+    'drf_spectacular'
 ]
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -82,12 +83,20 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
+         'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=3),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'FluxPOS API',
+    'DESCRIPTION': 'Dokumentasi API untuk sistem FluxPOS',
+    'VERSION': '1.0.0',
+    'SERVE_SIDECAR': True,  # Pastikan SIDECAR huruf besar semua
 }
 
 import os
@@ -109,10 +118,9 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOW_ALL_ORIGINS = True
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-       'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
+    'corsheaders.middleware.CorsMiddleware', # Tetap di atas untuk handle CORS duluan
+    'django.contrib.sessions.middleware.SessionMiddleware', # Pindahkan ke atas CommonMiddleware
+    'django.middleware.common.CommonMiddleware', # Cukup satu saja (hapus duplikat)
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -190,3 +198,25 @@ USE_TZ = True
 
 
 STATIC_URL = 'static/'
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'FluxPOS API',
+    'DESCRIPTION': 'Dokumentasi API untuk sistem FluxPOS',
+    'VERSION': '1.0.0',
+    'SERVE_SIDECAR': True,
+    'COMPONENT_SPLIT_PATCH': True,
+    'SECURITY': [
+        {
+            'jwtAuth': [],
+        }
+    ],
+    'APPEND_COMPONENTS': {
+        "securitySchemes": {
+            "jwtAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT",
+            }
+        }
+    },
+}

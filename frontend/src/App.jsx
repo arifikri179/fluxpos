@@ -1,20 +1,22 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Register from './pages/Register';
-import Login from './pages/Login';
-import SetupBusiness from './pages/SetupBusiness';
-import SetupBranch from './pages/SetupBranch';
-import BusinessProfile from './pages/BusinessProfile';
-import ForgotPassword from './pages/ForgotPassword';
+import Register from './pages/authentication/Register';
+import Login from './pages/authentication/Login';
+import SetupBusiness from './pages/business/SetupBusiness';
+import SetupBranch from './pages/business/SetupBranch';
+import AddBranch from './pages/business/AddBranch';
+import BusinessProfile from './pages/business/BusinessProfile';
+import ForgotPassword from './pages/authentication/ForgotPassword';
+import ResetPassword from './pages/authentication/ResetPassword';
+import AdminLayout from './layouts/AdminLayout';
+import NotFound from './pages/404/NotFound';
+import BusinessPage from './pages/business/BusinessPage';
+import BranchList from './pages/business/BranchList';
+import SalesHistory from './pages/transaction/SalesHistory';
 
-// --- KOMPONEN PROTECTED ROUTE (SATPAM) ---
+
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('access_token');
-  
-  if (!token) {
-    // Jika tidak ada token, tendang ke login dan hapus history
-    return <Navigate to="/login" replace />;
-  }
-  
+  if (!token) return <Navigate to="/login" replace />;
   return children;
 };
 
@@ -22,37 +24,53 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Redirect awal ke Login */}
+        {/* --- PUBLIC --- */}
         <Route path="/" element={<Navigate to="/login" replace />} />
-        
-        {/* Public Routes (Bisa diakses tanpa login) */}
-        <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         
-        {/* Protected Routes (Hanya bisa diakses jika ada token) */}
-        <Route 
-          path="/setup-business" 
-          element={<ProtectedRoute><SetupBusiness /></ProtectedRoute>} 
-        />
-        <Route 
-          path="/setup-branch" 
-          element={<ProtectedRoute><SetupBranch /></ProtectedRoute>} 
-        /> 
-        <Route 
-          path="/profile" 
-          element={<ProtectedRoute><BusinessProfile /></ProtectedRoute>} 
-        />
+        {/* PINDAH: BusinessPage sekarang di bawah agar mendapatkan Sidebar */}
         
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        {/* Contoh jika Dashboard sudah aktif nanti */}
-        {/* <Route 
-          path="/dashboard" 
-          element={<ProtectedRoute><Dashboard /></ProtectedRoute>} 
-        /> 
-        */}
+        <Route path="/reset-password/:uid/:token" element={<ResetPassword />} />
 
-        {/* Catch-all: Jika route tidak ditemukan, lempar ke login */}
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        {/* --- ONBOARDING (No Sidebar) --- */}
+        <Route path="/setup-business" element={<ProtectedRoute><SetupBusiness /></ProtectedRoute>} />
+        <Route path="/setup-branch" element={<ProtectedRoute><SetupBranch /></ProtectedRoute>} />
+
+        {/* --- ADMIN (With Sidebar) --- */}
+        <Route path="/profile" element={
+          <ProtectedRoute>
+            <AdminLayout><BusinessProfile /></AdminLayout>
+          </ProtectedRoute>
+        } />
+        
+        {/* Business List Page diletakkan di sini agar ada Sidebar-nya */}
+        <Route path="/business/list" element={
+          <ProtectedRoute>
+            <AdminLayout><BusinessPage /></AdminLayout>
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/add-branch" element={
+          <ProtectedRoute>
+            <AdminLayout><AddBranch /></AdminLayout>
+          </ProtectedRoute>
+        } />
+
+      <Route path="/branch-list" element={
+          <ProtectedRoute>
+            <AdminLayout><BranchList /></AdminLayout>
+          </ProtectedRoute>
+        } />
+
+      <Route path="/transactions/history" element={
+          <ProtectedRoute>
+            <AdminLayout><SalesHistory /></AdminLayout>
+          </ProtectedRoute>
+        } />
+        <Route path="" element={<Navigate to="/login" replace />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );

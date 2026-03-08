@@ -11,7 +11,7 @@ class Business(models.Model):
 
    
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    owner = models.OneToOneField(User, on_delete=models.CASCADE, related_name='business')
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='businesses')
     name = models.CharField(max_length=100)
     business_type = models.CharField(max_length=20, choices=TYPES)
     created_at = models.DateTimeField(auto_now_add=True)

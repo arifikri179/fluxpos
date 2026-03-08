@@ -1,4 +1,5 @@
 from django.db import models
+from business.models import Branch
 import uuid
 
 class ItemCategory(models.Model):
@@ -37,6 +38,7 @@ class ItemSubcategory(models.Model):
 class Item(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     code = models.CharField(max_length=10, unique=True, editable=False)
+    Branch = models.ForeignKey(Branch, on_delete=models.CASCADE,related_name='items')
     name = models.CharField(max_length=250)
 
     price = models.DecimalField(
