@@ -34,7 +34,7 @@ class RegisterView(generics.CreateAPIView):
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         token = default_token_generator.make_token(user)
     
-        activation_link = f"http://localhost:8000/api/auth/activate/{uid}/{token}/"
+        activation_link = f"https://localhost:8000/api/auth/activate/{uid}/{token}/"
         subject = 'Aktivasi Akun FluxPOS'
         context = {
             'first_name': user.first_name,
@@ -81,7 +81,7 @@ def forgot_password(request):
         token = default_token_generator.make_token(user)
 
         # Link Reset mengarah ke FRONTEND (Netlify)
-        reset_link = f"http://localhost:5173/reset-password/{uid}/{token}"
+        reset_link = f"https://fluxpos.netlify.app/reset-password/{uid}/{token}"
 
 
         subject = 'Reset Password FluxPOS'

@@ -115,10 +115,10 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True
+
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'corsheaders.middleware.CorsMiddleware', # Tetap di atas untuk handle CORS duluan
     'django.contrib.sessions.middleware.SessionMiddleware', # Pindahkan ke atas CommonMiddleware
     'django.middleware.common.CommonMiddleware', # Cukup satu saja (hapus duplikat)
     'django.middleware.csrf.CsrfViewMiddleware',
